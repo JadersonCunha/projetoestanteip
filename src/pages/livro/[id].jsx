@@ -235,7 +235,7 @@ export default function LivroPage() {
             <div style={bookWrapperStyle}>
               <div style={bookScaleStyle}>
                 <HTMLFlipBook ref={bookRef} width={PORTRAIT_W} height={PORTRAIT_H}
-                  showCover={false} flippingTime={700} usePortrait={false}
+                  showCover={true} flippingTime={700} usePortrait={false}
                   startPage={0} onFlip={onFlip} className="shadow-2xl">
                   {flipPages.map((fp, i) => {
                     if (fp.type === 'cover') return <CoverPage key="cover" ref={React.createRef()} livro={livro} />;
