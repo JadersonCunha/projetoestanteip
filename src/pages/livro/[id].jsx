@@ -180,11 +180,18 @@ export default function LivroPage() {
   const onFlip = useCallback((e) => {
     const page = e.data;
     setCurrentPage(page);
-    // Ao chegar na última página (contracapa), volta para a capa
+    // Última página → volta para capa
     if (page === flipPages.length - 1) {
       setTimeout(() => {
         try { bookRef.current?.pageFlip()?.flip(0); } catch (_) {}
         setCurrentPage(0);
+      }, 900);
+    }
+    // Capa → vai para última página
+    if (page === 0) {
+      setTimeout(() => {
+        try { bookRef.current?.pageFlip()?.flip(flipPages.length - 1); } catch (_) {}
+        setCurrentPage(flipPages.length - 1);
       }, 900);
     }
   }, [flipPages.length]);
