@@ -270,16 +270,15 @@ export default function LivroPage() {
           <>
             <div className="flex flex-wrap items-center justify-center gap-4 mt-8">
               <button onClick={() => {
-              if (currentPage === 0) {
-                try { bookRef.current?.pageFlip()?.flip(flipPages.length - 1); } catch (_) {}
-              } else {
-                bookRef.current?.pageFlip()?.flipPrev();
-              }
-            }}
-            className="border-2 px-6 py-2 rounded-full font-bold transition"
-            style={{ borderColor: cfg.bg, color: cfg.bg }}>← Voltar</button>
+                try {
+                  if (currentPage === 0) bookRef.current?.pageFlip()?.flip(flipPages.length - 1);
+                  else bookRef.current?.pageFlip()?.flipPrev();
+                } catch (_) {}
+              }}
+              className="border-2 px-6 py-2 rounded-full font-bold transition"
+              style={{ borderColor: cfg.bg, color: cfg.bg }}>← Voltar</button>
               <span className="text-sm text-[#555]">{currentPage + 1} / {flipPages.length}</span>
-              <button onClick={() => bookRef.current?.pageFlip().flipNext()}
+              <button onClick={() => { try { bookRef.current?.pageFlip()?.flipNext(); } catch (_) {} }}
                 className="px-6 py-2 rounded-full font-bold text-white transition"
                 style={{ backgroundColor: btnColor }}>Avançar →</button>
             </div>
