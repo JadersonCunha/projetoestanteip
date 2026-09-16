@@ -116,7 +116,9 @@ export default function LivroPage() {
 
   useEffect(() => {
     import('react-pdf').then(({ pdfjs }) => {
-      pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
+      if (typeof window !== 'undefined') {
+        pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
+      }
     });
   }, []);
 
@@ -124,7 +126,7 @@ export default function LivroPage() {
 
   const onDocumentLoad = useCallback(async ({ numPages }) => {
     const { pdfjs } = await import('react-pdf');
-    const pdf = await pdfjs.getDocument(pdfUrl).promise;
+    const pdf = await pdfjs.getDocument({ url: pdfUrl, workerSrc: `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js` }).promise;
     const sizes = [];
     for (let i = 1; i <= numPages; i++) {
       const page = await pdf.getPage(i);
