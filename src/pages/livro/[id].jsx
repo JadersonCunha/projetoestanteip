@@ -38,23 +38,35 @@ const CoverPage = React.forwardRef(({ livro, isBack, w, h }, ref) => {
   const cfg = turmaConfig[livro?.turma] || { bg: '#1E4D3B', accent: '#FFD430', label: '' };
   const initials = livro?.educando?.split(' ').map((n) => n[0]).slice(0, 2).join('').toUpperCase();
   return (
-    <div ref={ref} style={{ width: w, height: h, backgroundColor: cfg.bg, userSelect: 'none', position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 32 }}
+    <div ref={ref} style={{ width: w, height: h, userSelect: 'none', position: 'relative', overflow: 'hidden', backgroundColor: cfg.bg }}
       onContextMenu={(e) => e.preventDefault()}>
-      <div style={{ position: 'absolute', left: 0, top: 0, height: '100%', width: 20, backgroundColor: 'rgba(0,0,0,0.25)' }} />
-      <div style={{ position: 'absolute', top: 0, left: 20, right: 0, height: 8, backgroundColor: cfg.accent }} />
-      <div style={{ position: 'absolute', bottom: 0, left: 20, right: 0, height: 8, backgroundColor: cfg.accent }} />
+
+      {/* Lombada */}
+      <div style={{ position: 'absolute', left: 0, top: 0, width: 18, height: '100%', backgroundColor: 'rgba(0,0,0,0.3)' }} />
+
+      {/* Faixas decorativas */}
+      <div style={{ position: 'absolute', top: 0, left: 18, right: 0, height: 10, backgroundColor: cfg.accent }} />
+      <div style={{ position: 'absolute', bottom: 0, left: 18, right: 0, height: 10, backgroundColor: cfg.accent }} />
+
+      {/* Círculo decorativo de fundo */}
+      <div style={{ position: 'absolute', right: -60, top: -60, width: 220, height: 220, borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.06)' }} />
+      <div style={{ position: 'absolute', left: -30, bottom: -40, width: 160, height: 160, borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.05)' }} />
+
       {isBack ? (
-        <p style={{ color: 'white', opacity: 0.4, fontSize: 13 }}>IP · Instituto Providência · 2026</p>
+        <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <p style={{ color: 'white', opacity: 0.4, fontSize: 13 }}>IP · Instituto Providência · 2026</p>
+        </div>
       ) : (
-        <>
-          <p style={{ color: cfg.accent, opacity: 0.6, fontSize: 10, textTransform: 'uppercase', letterSpacing: 3, marginBottom: 28 }}>Instituto Providência</p>
-          <div style={{ width: 88, height: 88, borderRadius: '50%', border: `4px solid ${cfg.accent}`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20 }}>
-            <span style={{ color: cfg.accent, fontSize: 32, fontWeight: 900 }}>{initials}</span>
+        <div style={{ position: 'absolute', top: 10, left: 18, right: 0, bottom: 10, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '0 24px', gap: 0 }}>
+          <p style={{ color: cfg.accent, opacity: 0.75, fontSize: 10, textTransform: 'uppercase', letterSpacing: 3, marginBottom: 24, textAlign: 'center' }}>Instituto Providência</p>
+          <div style={{ width: 90, height: 90, borderRadius: '50%', border: `4px solid ${cfg.accent}`, backgroundColor: 'rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20 }}>
+            <span style={{ color: cfg.accent, fontSize: 34, fontWeight: 900 }}>{initials}</span>
           </div>
-          <h2 style={{ color: 'white', fontWeight: 900, fontSize: 22, textAlign: 'center', lineHeight: 1.3 }}>{livro?.educando}</h2>
-          <p style={{ color: cfg.accent, opacity: 0.7, fontSize: 13, marginTop: 8 }}>{cfg.label}</p>
-          <p style={{ color: 'white', opacity: 0.4, fontSize: 11, marginTop: 28 }}>IP · 2026</p>
-        </>
+          <h2 style={{ color: 'white', fontWeight: 900, fontSize: 20, textAlign: 'center', lineHeight: 1.3, margin: 0, marginBottom: 10 }}>{livro?.educando}</h2>
+          <div style={{ width: 40, height: 3, backgroundColor: cfg.accent, opacity: 0.6, borderRadius: 2, marginBottom: 10 }} />
+          <p style={{ color: cfg.accent, opacity: 0.85, fontSize: 13, margin: 0, textAlign: 'center' }}>{cfg.label}</p>
+          <p style={{ color: 'white', opacity: 0.35, fontSize: 11, marginTop: 24 }}>IP · 2026</p>
+        </div>
       )}
     </div>
   );
