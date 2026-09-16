@@ -64,17 +64,20 @@ const CoverPage = React.forwardRef(({ livro, isBack }, ref) => {
 CoverPage.displayName = 'CoverPage';
 
 // Página retrato normal
-const PortraitPage = React.forwardRef(({ dataUrl, pageIndex, expanded, onToggle, cfg }, ref) => (
+const PortraitPage = React.forwardRef(({ dataUrl, pageIndex, pageNumber, onToggle, cfg }, ref) => (
   <div ref={ref} style={{ width: PORTRAIT_W, height: PORTRAIT_H, userSelect: 'none', position: 'relative' }}
     className="bg-white select-none overflow-hidden" onContextMenu={(e) => e.preventDefault()}>
     {dataUrl ? (
       <>
         <img src={dataUrl} alt="" style={{ width: PORTRAIT_W, height: PORTRAIT_H, objectFit: 'contain', display: 'block' }} draggable={false} />
+        <span style={{ position: 'absolute', bottom: 8, left: '50%', transform: 'translateX(-50%)', fontSize: 11, color: cfg.bg, opacity: 0.6, fontWeight: 'bold', pointerEvents: 'none' }}>
+          {pageNumber}
+        </span>
         <button
           onClick={(e) => { e.stopPropagation(); onToggle(pageIndex); }}
-          title={expanded ? 'Voltar para retrato' : 'Expandir em paisagem'}
-          style={{ position: 'absolute', bottom: 8, right: 8, backgroundColor: cfg.bg, color: cfg.accent, border: 'none', borderRadius: '50%', width: 32, height: 32, fontSize: 16, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.85 }}>
-          {expanded ? '▢' : '⛶'}
+          title="Expandir em paisagem"
+          style={{ position: 'absolute', bottom: 6, right: 8, backgroundColor: cfg.bg, color: cfg.accent, border: 'none', borderRadius: '50%', width: 28, height: 28, fontSize: 14, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.8 }}>
+          ⛶
         </button>
       </>
     ) : (
@@ -85,7 +88,7 @@ const PortraitPage = React.forwardRef(({ dataUrl, pageIndex, expanded, onToggle,
 PortraitPage.displayName = 'PortraitPage';
 
 // Metade de página paisagem (left ou right)
-const LandscapePage = React.forwardRef(({ dataUrl, side, pageIndex, onToggle, cfg }, ref) => (
+const LandscapePage = React.forwardRef(({ dataUrl, side, pageIndex, pageNumber, onToggle, cfg }, ref) => (
   <div ref={ref} style={{ width: PORTRAIT_W, height: PORTRAIT_H, userSelect: 'none', overflow: 'hidden', position: 'relative' }}
     className="bg-white select-none" onContextMenu={(e) => e.preventDefault()}>
     <div style={{
@@ -95,12 +98,17 @@ const LandscapePage = React.forwardRef(({ dataUrl, side, pageIndex, onToggle, cf
       <img src={dataUrl} alt="" style={{ width: PORTRAIT_W * 2, height: PORTRAIT_H, objectFit: 'fill', display: 'block' }} draggable={false} />
     </div>
     {side === 'right' && (
-      <button
-        onClick={(e) => { e.stopPropagation(); onToggle(pageIndex); }}
-        title="Voltar para retrato"
-        style={{ position: 'absolute', bottom: 8, right: 8, backgroundColor: cfg.bg, color: cfg.accent, border: 'none', borderRadius: '50%', width: 32, height: 32, fontSize: 16, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.85 }}>
-        ▢
-      </button>
+      <>
+        <span style={{ position: 'absolute', bottom: 8, left: '50%', transform: 'translateX(-50%)', fontSize: 11, color: cfg.bg, opacity: 0.6, fontWeight: 'bold', pointerEvents: 'none' }}>
+          {pageNumber}
+        </span>
+        <button
+          onClick={(e) => { e.stopPropagation(); onToggle(pageIndex); }}
+          title="Voltar para retrato"
+          style={{ position: 'absolute', bottom: 6, right: 8, backgroundColor: cfg.bg, color: cfg.accent, border: 'none', borderRadius: '50%', width: 28, height: 28, fontSize: 14, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.8 }}>
+          ▢
+        </button>
+      </>
     )}
   </div>
 ));
@@ -165,13 +173,15 @@ export default function LivroPage() {
   const flipPages = useMemo(() => {
     if (pages.length === 0) return [];
     const result = [{ type: 'cover' }];
+    let pageNumber = 1;
     pages.forEach((p, i) => {
       if (expandedPages[i]) {
-        result.push({ type: 'landscape-left',  pageIndex: i, dataUrl: p.dataUrlLandscape });
-        result.push({ type: 'landscape-right', pageIndex: i, dataUrl: p.dataUrlLandscape });
+        result.push({ type: 'landscape-left',  pageIndex: i, dataUrl: p.dataUrlLandscape, pageNumber });
+        result.push({ type: 'landscape-right', pageIndex: i, dataUrl: p.dataUrlLandscape, pageNumber });
       } else {
-        result.push({ type: 'portrait', pageIndex: i, dataUrl: p.dataUrl });
+        result.push({ type: 'portrait', pageIndex: i, dataUrl: p.dataUrl, pageNumber });
       }
+      pageNumber++;
     });
     result.push({ type: 'back' });
     return result;
@@ -242,13 +252,13 @@ export default function LivroPage() {
                     if (fp.type === 'back')   return <CoverPage key="back"  ref={React.createRef()} livro={livro} isBack />;
                     if (fp.type === 'portrait')
                       return <PortraitPage key={i} ref={React.createRef()} dataUrl={fp.dataUrl}
-                        pageIndex={fp.pageIndex} expanded={false} onToggle={toggleExpand} cfg={cfg} />;
+                        pageIndex={fp.pageIndex} pageNumber={fp.pageNumber} onToggle={toggleExpand} cfg={cfg} />;
                     if (fp.type === 'landscape-left')
                       return <LandscapePage key={`${i}-l`} ref={React.createRef()} dataUrl={fp.dataUrl}
-                        side="left" pageIndex={fp.pageIndex} onToggle={toggleExpand} cfg={cfg} />;
+                        side="left" pageIndex={fp.pageIndex} pageNumber={fp.pageNumber} onToggle={toggleExpand} cfg={cfg} />;
                     if (fp.type === 'landscape-right')
                       return <LandscapePage key={`${i}-r`} ref={React.createRef()} dataUrl={fp.dataUrl}
-                        side="right" pageIndex={fp.pageIndex} onToggle={toggleExpand} cfg={cfg} />;
+                        side="right" pageIndex={fp.pageIndex} pageNumber={fp.pageNumber} onToggle={toggleExpand} cfg={cfg} />;
                   })}
                 </HTMLFlipBook>
               </div>
