@@ -259,9 +259,15 @@ export default function LivroPage() {
         {!pdfLoading && flipPages.length > 0 && (
           <>
             <div className="flex flex-wrap items-center justify-center gap-4 mt-8">
-              <button onClick={() => bookRef.current?.pageFlip().flipPrev()}
-                className="border-2 px-6 py-2 rounded-full font-bold transition"
-                style={{ borderColor: cfg.bg, color: cfg.bg }}>← Voltar</button>
+              <button onClick={() => {
+              if (currentPage === 0) {
+                try { bookRef.current?.pageFlip()?.flip(flipPages.length - 1); } catch (_) {}
+              } else {
+                bookRef.current?.pageFlip()?.flipPrev();
+              }
+            }}
+            className="border-2 px-6 py-2 rounded-full font-bold transition"
+            style={{ borderColor: cfg.bg, color: cfg.bg }}>← Voltar</button>
               <span className="text-sm text-[#555]">{currentPage + 1} / {flipPages.length}</span>
               <button onClick={() => bookRef.current?.pageFlip().flipNext()}
                 className="px-6 py-2 rounded-full font-bold text-white transition"
