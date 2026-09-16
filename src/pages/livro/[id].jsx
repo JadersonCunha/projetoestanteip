@@ -38,7 +38,7 @@ const CoverPage = React.forwardRef(({ livro, isBack, w, h }, ref) => {
   const cfg = turmaConfig[livro?.turma] || { bg: '#1E4D3B', accent: '#FFD430', label: '' };
   const initials = livro?.educando?.split(' ').map((n) => n[0]).slice(0, 2).join('').toUpperCase();
   return (
-    <div ref={ref} style={{ width: w, height: h, userSelect: 'none', position: 'relative', overflow: 'hidden', backgroundColor: cfg.bg }}
+    <div ref={ref} data-density="hard" style={{ width: w, height: h, userSelect: 'none', position: 'relative', overflow: 'hidden', backgroundColor: cfg.bg }}
       onContextMenu={(e) => e.preventDefault()}>
 
       {/* Lombada */}
