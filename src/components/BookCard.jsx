@@ -1,40 +1,72 @@
 import React from 'react';
 import Link from 'next/link';
 
-const coresTurma = {
-  acolhida:             { bg: '#005D72', label: 'Acolhida' },
-  empatia:              { bg: '#972632', label: 'Empatia' },
-  fe:                   { bg: '#004f63', label: 'Fé' },
-  gratidao:             { bg: '#7a5c00', label: 'Gratidão' },
-  'trabalho-educativo': { bg: '#972632', label: 'Trabalho Educativo' },
+const turmaConfig = {
+  'acolhida-manha': { bg: '#005D72', accent: '#FFD430', label: 'Acolhida Manhã',  icon: '🌅' },
+  'acolhida-tarde': { bg: '#007A8A', accent: '#FFD430', label: 'Acolhida Tarde',  icon: '🌇' },
+  'empatia-tarde':  { bg: '#972632', accent: '#FFB347', label: 'Empatia Tarde',   icon: '💛' },
+  'fe-manha':       { bg: '#4A3728', accent: '#E8C97A', label: 'Fé Manhã',        icon: '✨' },
+  'fe-tarde':       { bg: '#6B4226', accent: '#E8C97A', label: 'Fé Tarde',        icon: '🕯️' },
+  'gratidao':       { bg: '#2D5016', accent: '#A8D55A', label: 'Gratidão',        icon: '🌿' },
 };
 
 export default function BookCard({ livro }) {
-  const cor = coresTurma[livro.turma] || { bg: '#005D72', label: livro.turma };
+  const cfg = turmaConfig[livro.turma] || { bg: '#005D72', accent: '#FFD430', label: livro.turma, icon: '📖' };
+  const initials = livro.educando.split(' ').map((w) => w[0]).slice(0, 2).join('').toUpperCase();
 
   return (
     <Link href={`/livro/${livro.id}`}>
       <div className="group cursor-pointer flex flex-col items-center">
+        {/* Capa do livro */}
         <div
-          className="relative w-36 h-48 rounded-r-lg shadow-xl transition-transform duration-300 group-hover:-translate-y-2 group-hover:shadow-2xl"
-          style={{ backgroundColor: cor.bg }}
+          className="relative w-36 h-52 rounded-r-lg shadow-xl transition-all duration-300 group-hover:-translate-y-3 group-hover:shadow-2xl overflow-hidden"
+          style={{ backgroundColor: cfg.bg }}
         >
           {/* Lombada */}
-          <div className="absolute left-0 top-0 h-full w-3 rounded-l-sm bg-black opacity-20" />
-          {/* Faixa amarela no topo */}
-          <div className="absolute top-0 left-3 right-0 h-1 bg-[#FFD430] opacity-80" />
-          <div className="flex flex-col justify-between h-full p-3 pl-5">
-            <span className="text-white text-xs font-bold uppercase tracking-widest opacity-80">
-              {cor.label}
-            </span>
-            <div>
-              <p className="text-white font-extrabold text-sm leading-tight">{livro.educando}</p>
-              <p className="text-white/70 text-xs mt-1">{livro.educadora}</p>
-            </div>
-            <span className="text-[#FFD430] text-xs opacity-80 font-bold">IP · 2026</span>
+          <div className="absolute left-0 top-0 h-full w-4 flex flex-col items-center justify-center gap-1"
+            style={{ backgroundColor: 'rgba(0,0,0,0.25)' }}>
+            <div className="w-1 h-1 rounded-full" style={{ backgroundColor: cfg.accent }} />
+            <div className="w-1 h-1 rounded-full" style={{ backgroundColor: cfg.accent }} />
+            <div className="w-1 h-1 rounded-full" style={{ backgroundColor: cfg.accent }} />
           </div>
+
+          {/* Faixa superior */}
+          <div className="absolute top-0 left-4 right-0 h-1.5" style={{ backgroundColor: cfg.accent }} />
+
+          {/* Faixa inferior */}
+          <div className="absolute bottom-0 left-4 right-0 h-1.5" style={{ backgroundColor: cfg.accent }} />
+
+          {/* Conteúdo */}
+          <div className="absolute left-4 right-0 top-0 bottom-0 flex flex-col justify-between p-3">
+            {/* Turma */}
+            <span className="text-[9px] font-bold uppercase tracking-widest opacity-70"
+              style={{ color: cfg.accent }}>
+              {cfg.label}
+            </span>
+
+            {/* Iniciais centralizadas */}
+            <div className="flex flex-col items-center justify-center flex-1 gap-1">
+              <div
+                className="w-14 h-14 rounded-full flex items-center justify-center text-xl font-extrabold border-2"
+                style={{ borderColor: cfg.accent, color: cfg.accent, backgroundColor: 'rgba(255,255,255,0.08)' }}
+              >
+                {initials}
+              </div>
+              <span className="text-lg">{cfg.icon}</span>
+            </div>
+
+            {/* Nome e ano */}
+            <div>
+              <p className="text-white font-extrabold text-xs leading-tight line-clamp-2">{livro.educando}</p>
+              <p className="text-[9px] font-bold mt-1 opacity-60" style={{ color: cfg.accent }}>IP · 2026</p>
+            </div>
+          </div>
+
+          {/* Brilho no hover */}
+          <div className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-300 bg-white" />
         </div>
-        <p className="mt-3 text-sm font-semibold text-[#005D72] text-center max-w-[9rem] leading-tight">
+
+        <p className="mt-3 text-xs font-semibold text-[#005D72] text-center max-w-[9rem] leading-tight">
           {livro.educando}
         </p>
       </div>

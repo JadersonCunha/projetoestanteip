@@ -18,9 +18,10 @@ export const livros = [
 ];
 
 export const turmas = [
-  { id: 'acolhida',           nome: 'Acolhida' },
-  { id: 'empatia',            nome: 'Empatia' },
-  { id: 'fe',                 nome: 'Fé' },
-  { id: 'gratidao',           nome: 'Gratidão' },
-  { id: 'trabalho-educativo', nome: 'Trabalho Educativo' },
+  { id: 'acolhida-manha', nome: 'Acolhida Manhã' },
+  { id: 'acolhida-tarde', nome: 'Acolhida Tarde' },
+  { id: 'empatia-tarde',  nome: 'Empatia Tarde' },
+  { id: 'fe-manha',       nome: 'Fé Manhã' },
+  { id: 'fe-tarde',       nome: 'Fé Tarde' },
+  { id: 'gratidao',       nome: 'Gratidão' },
 ];
