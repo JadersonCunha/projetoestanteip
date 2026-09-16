@@ -183,7 +183,7 @@ export default function LivroPage() {
     // Ao chegar na última página (contracapa), volta para a capa
     if (page === flipPages.length - 1) {
       setTimeout(() => {
-        bookRef.current?.pageFlip().flip(0);
+        try { bookRef.current?.pageFlip()?.flip(0); } catch (_) {}
         setCurrentPage(0);
       }, 900);
     }
