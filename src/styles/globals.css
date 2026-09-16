@@ -1,0 +1,126 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+/* Limita largura máxima do conteúdo e centraliza */
+.container-site {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* Tamanhos de fonte fixos com clamp — não variam com a tela */
+.titulo-hero span {
+  font-size: clamp(2.5rem, 4vw, 3.8rem) !important;
+  line-height: 1.1 !important;
+}
+
+/* Responsividade mobile */
+@media (max-width: 768px) {
+  .hero-grid {
+    grid-template-columns: 1fr !important;
+    gap: 2rem !important;
+  }
+  .hero-ilustracao {
+    display: none !important;
+  }
+  .hero-section {
+    padding: 2rem 1.2rem !important;
+    min-height: auto !important;
+  }
+  .sobre-section {
+    padding: 3rem 1.2rem !important;
+  }
+  .navbar-nav {
+    display: none !important;
+  }
+  .navbar-hamburger {
+    display: flex !important;
+  }
+  .navbar-header {
+    padding: 1rem 1.2rem !important;
+    position: relative !important;
+  }
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #FFD430 #003D4D;
+}
+
+/* SimpleBar */
+.simplebar-track.simplebar-vertical {
+  background: #003D4D !important;
+  width: 10px !important;
+  right: 0 !important;
+}
+
+.simplebar-scrollbar::before {
+  background: #FFD430 !important;
+  border-radius: 999px !important;
+  left: 2px !important;
+  right: 2px !important;
+  opacity: 1 !important;
+}
+
+.simplebar-scrollbar.simplebar-visible::before {
+  opacity: 1 !important;
+}
+
+.simplebar-track.simplebar-vertical .simplebar-scrollbar:hover::before {
+  background: #972632 !important;
+}
+
+@keyframes wobble {
+  0%   { transform: rotate(0deg); }
+  15%  { transform: rotate(-8deg); }
+  30%  { transform: rotate(7deg); }
+  45%  { transform: rotate(-5deg); }
+  60%  { transform: rotate(4deg); }
+  75%  { transform: rotate(-2deg); }
+  100% { transform: rotate(0deg); }
+}
+
+.nav-wobble:hover {
+  animation: wobble 0.6s ease;
+  display: inline-block;
+}
+
+@keyframes slideFromTop {
+  0%   { opacity: 0; transform: translateY(-120vh); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideFromLeft {
+  0%   { opacity: 0; transform: translateX(-120vw); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideFromBottom {
+  0%   { opacity: 0; transform: translateY(120vh); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.animate-from-top {
+  animation: slideFromTop 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+}
+
+.animate-from-left {
+  animation: slideFromLeft 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+  animation-delay: 0.5s;
+}
+
+.animate-from-bottom {
+  animation: slideFromBottom 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+  animation-delay: 1s;
+}
