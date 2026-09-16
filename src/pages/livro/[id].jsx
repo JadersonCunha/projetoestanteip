@@ -5,8 +5,8 @@ import Navbar from '../../components/Navbar';
 
 const HTMLFlipBook = dynamic(() => import('react-pageflip'), { ssr: false });
 
-const PORTRAIT_W = 420;
-const PORTRAIT_H = 600;
+const BASE_W = 420;
+const BASE_H = 600;
 const MIN_ZOOM = 0.6;
 const MAX_ZOOM = 1.4;
 const ZOOM_STEP = 0.1;
@@ -34,28 +34,26 @@ function loadPdfJs() {
   });
 }
 
-// Página capa/contracapa
-const CoverPage = React.forwardRef(({ livro, isBack }, ref) => {
+const CoverPage = React.forwardRef(({ livro, isBack, w, h }, ref) => {
   const cfg = turmaConfig[livro?.turma] || { bg: '#1E4D3B', accent: '#FFD430', label: '' };
-  const initials = livro?.educando?.split(' ').map((w) => w[0]).slice(0, 2).join('').toUpperCase();
+  const initials = livro?.educando?.split(' ').map((n) => n[0]).slice(0, 2).join('').toUpperCase();
   return (
-    <div ref={ref} style={{ width: PORTRAIT_W, height: PORTRAIT_H, backgroundColor: cfg.bg, userSelect: 'none' }}
-      className="select-none overflow-hidden relative flex flex-col items-center justify-center p-8"
+    <div ref={ref} style={{ width: w, height: h, backgroundColor: cfg.bg, userSelect: 'none', position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 32 }}
       onContextMenu={(e) => e.preventDefault()}>
-      <div className="absolute left-0 top-0 h-full w-5" style={{ backgroundColor: 'rgba(0,0,0,0.25)' }} />
-      <div className="absolute top-0 left-5 right-0 h-2" style={{ backgroundColor: cfg.accent }} />
-      <div className="absolute bottom-0 left-5 right-0 h-2" style={{ backgroundColor: cfg.accent }} />
+      <div style={{ position: 'absolute', left: 0, top: 0, height: '100%', width: 20, backgroundColor: 'rgba(0,0,0,0.25)' }} />
+      <div style={{ position: 'absolute', top: 0, left: 20, right: 0, height: 8, backgroundColor: cfg.accent }} />
+      <div style={{ position: 'absolute', bottom: 0, left: 20, right: 0, height: 8, backgroundColor: cfg.accent }} />
       {isBack ? (
-        <p className="text-sm opacity-40 text-white">IP · Instituto Providência · 2026</p>
+        <p style={{ color: 'white', opacity: 0.4, fontSize: 13 }}>IP · Instituto Providência · 2026</p>
       ) : (
         <>
-          <p className="text-xs uppercase tracking-widest mb-8 opacity-60" style={{ color: cfg.accent }}>Instituto Providência</p>
-          <div className="w-24 h-24 rounded-full border-4 flex items-center justify-center mb-6" style={{ borderColor: cfg.accent }}>
-            <span className="text-4xl font-extrabold" style={{ color: cfg.accent }}>{initials}</span>
+          <p style={{ color: cfg.accent, opacity: 0.6, fontSize: 10, textTransform: 'uppercase', letterSpacing: 3, marginBottom: 28 }}>Instituto Providência</p>
+          <div style={{ width: 88, height: 88, borderRadius: '50%', border: `4px solid ${cfg.accent}`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20 }}>
+            <span style={{ color: cfg.accent, fontSize: 32, fontWeight: 900 }}>{initials}</span>
           </div>
-          <h2 className="text-2xl font-extrabold text-center text-white leading-tight">{livro?.educando}</h2>
-          <p className="mt-2 text-sm opacity-70" style={{ color: cfg.accent }}>{cfg.label}</p>
-          <p className="mt-8 text-xs opacity-50 text-white">IP · 2026</p>
+          <h2 style={{ color: 'white', fontWeight: 900, fontSize: 22, textAlign: 'center', lineHeight: 1.3 }}>{livro?.educando}</h2>
+          <p style={{ color: cfg.accent, opacity: 0.7, fontSize: 13, marginTop: 8 }}>{cfg.label}</p>
+          <p style={{ color: 'white', opacity: 0.4, fontSize: 11, marginTop: 28 }}>IP · 2026</p>
         </>
       )}
     </div>
@@ -63,53 +61,33 @@ const CoverPage = React.forwardRef(({ livro, isBack }, ref) => {
 });
 CoverPage.displayName = 'CoverPage';
 
-// Página retrato normal
-const PortraitPage = React.forwardRef(({ dataUrl, pageIndex, pageNumber, onToggle, cfg }, ref) => (
-  <div ref={ref} style={{ width: PORTRAIT_W, height: PORTRAIT_H, userSelect: 'none', position: 'relative' }}
-    className="bg-white select-none overflow-hidden" onContextMenu={(e) => e.preventDefault()}>
-    {dataUrl ? (
-      <>
-        <img src={dataUrl} alt="" style={{ width: PORTRAIT_W, height: PORTRAIT_H, objectFit: 'contain', display: 'block' }} draggable={false} />
-        <span style={{ position: 'absolute', bottom: 8, left: '50%', transform: 'translateX(-50%)', fontSize: 11, color: cfg.bg, opacity: 0.6, fontWeight: 'bold', pointerEvents: 'none' }}>
-          {pageNumber}
-        </span>
-        <button
-          onClick={(e) => { e.stopPropagation(); onToggle(pageIndex); }}
-          title="Expandir em paisagem"
-          style={{ position: 'absolute', bottom: 6, right: 8, backgroundColor: cfg.bg, color: cfg.accent, border: 'none', borderRadius: '50%', width: 28, height: 28, fontSize: 14, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.8 }}>
-          ⛶
-        </button>
-      </>
-    ) : (
-      <div className="w-full h-full flex items-center justify-center text-gray-300 text-sm">Carregando...</div>
-    )}
+const PortraitPage = React.forwardRef(({ dataUrl, pageIndex, pageNumber, onToggle, cfg, w, h }, ref) => (
+  <div ref={ref} style={{ width: w, height: h, userSelect: 'none', position: 'relative', overflow: 'hidden', backgroundColor: 'white' }}
+    onContextMenu={(e) => e.preventDefault()}>
+    {dataUrl
+      ? <>
+          <img src={dataUrl} alt="" style={{ width: w, height: h, objectFit: 'contain', display: 'block' }} draggable={false} />
+          <span style={{ position: 'absolute', bottom: 8, left: '50%', transform: 'translateX(-50%)', fontSize: 11, color: cfg.bg, opacity: 0.55, fontWeight: 'bold', pointerEvents: 'none' }}>{pageNumber}</span>
+          <button onClick={(e) => { e.stopPropagation(); onToggle(pageIndex); }} title="Expandir em paisagem"
+            style={{ position: 'absolute', bottom: 6, right: 8, backgroundColor: cfg.bg, color: cfg.accent, border: 'none', borderRadius: '50%', width: 26, height: 26, fontSize: 13, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.8 }}>⛶</button>
+        </>
+      : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ccc', fontSize: 13 }}>Carregando...</div>
+    }
   </div>
 ));
 PortraitPage.displayName = 'PortraitPage';
 
-// Metade de página paisagem (left ou right)
-const LandscapePage = React.forwardRef(({ dataUrl, side, pageIndex, pageNumber, onToggle, cfg }, ref) => (
-  <div ref={ref} style={{ width: PORTRAIT_W, height: PORTRAIT_H, userSelect: 'none', overflow: 'hidden', position: 'relative' }}
-    className="bg-white select-none" onContextMenu={(e) => e.preventDefault()}>
-    <div style={{
-      width: PORTRAIT_W * 2, height: PORTRAIT_H, overflow: 'hidden',
-      transform: side === 'right' ? `translateX(-${PORTRAIT_W}px)` : 'none',
-    }}>
-      <img src={dataUrl} alt="" style={{ width: PORTRAIT_W * 2, height: PORTRAIT_H, objectFit: 'fill', display: 'block' }} draggable={false} />
+const LandscapePage = React.forwardRef(({ dataUrl, side, pageIndex, pageNumber, onToggle, cfg, w, h }, ref) => (
+  <div ref={ref} style={{ width: w, height: h, userSelect: 'none', overflow: 'hidden', position: 'relative', backgroundColor: 'white' }}
+    onContextMenu={(e) => e.preventDefault()}>
+    <div style={{ width: w * 2, height: h, overflow: 'hidden', transform: side === 'right' ? `translateX(-${w}px)` : 'none' }}>
+      <img src={dataUrl} alt="" style={{ width: w * 2, height: h, objectFit: 'fill', display: 'block' }} draggable={false} />
     </div>
-    {side === 'right' && (
-      <>
-        <span style={{ position: 'absolute', bottom: 8, left: '50%', transform: 'translateX(-50%)', fontSize: 11, color: cfg.bg, opacity: 0.6, fontWeight: 'bold', pointerEvents: 'none' }}>
-          {pageNumber}
-        </span>
-        <button
-          onClick={(e) => { e.stopPropagation(); onToggle(pageIndex); }}
-          title="Voltar para retrato"
-          style={{ position: 'absolute', bottom: 6, right: 8, backgroundColor: cfg.bg, color: cfg.accent, border: 'none', borderRadius: '50%', width: 28, height: 28, fontSize: 14, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.8 }}>
-          ▢
-        </button>
-      </>
-    )}
+    {side === 'right' && <>
+      <span style={{ position: 'absolute', bottom: 8, left: '50%', transform: 'translateX(-50%)', fontSize: 11, color: cfg.bg, opacity: 0.55, fontWeight: 'bold', pointerEvents: 'none' }}>{pageNumber}</span>
+      <button onClick={(e) => { e.stopPropagation(); onToggle(pageIndex); }} title="Voltar para retrato"
+        style={{ position: 'absolute', bottom: 6, right: 8, backgroundColor: cfg.bg, color: cfg.accent, border: 'none', borderRadius: '50%', width: 26, height: 26, fontSize: 13, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.8 }}>▢</button>
+    </>}
   </div>
 ));
 LandscapePage.displayName = 'LandscapePage';
@@ -120,11 +98,14 @@ export default function LivroPage() {
   const bookRef = useRef();
   const [livro, setLivro] = useState(null);
   const [carregando, setCarregando] = useState(true);
-  const [pages, setPages] = useState([]); // { dataUrl, dataUrlLandscape }
+  const [pages, setPages] = useState([]);
   const [pdfLoading, setPdfLoading] = useState(false);
-  const [expandedPages, setExpandedPages] = useState({}); // pageIndex -> true/false
+  const [expandedPages, setExpandedPages] = useState({});
   const [currentPage, setCurrentPage] = useState(0);
   const [zoom, setZoom] = useState(1);
+
+  const W = Math.round(BASE_W * zoom);
+  const H = Math.round(BASE_H * zoom);
 
   useEffect(() => {
     if (!id) return;
@@ -142,23 +123,21 @@ export default function LivroPage() {
       const rendered = [];
       for (let i = 1; i <= pdf.numPages; i++) {
         const page = await pdf.getPage(i);
+        const vp0 = page.getViewport({ scale: 1 });
 
-        // Renderiza em retrato
-        const vpPortrait = page.getViewport({ scale: PORTRAIT_W / page.getViewport({ scale: 1 }).width });
+        const scaleP = BASE_W / vp0.width;
+        const vpP = page.getViewport({ scale: scaleP });
         const c1 = document.createElement('canvas');
-        c1.width = vpPortrait.width; c1.height = vpPortrait.height;
-        await page.render({ canvasContext: c1.getContext('2d'), viewport: vpPortrait }).promise;
+        c1.width = vpP.width; c1.height = vpP.height;
+        await page.render({ canvasContext: c1.getContext('2d'), viewport: vpP }).promise;
 
-        // Renderiza em paisagem (rotacionado 90°)
-        const vpLandscape = page.getViewport({ scale: PORTRAIT_H / page.getViewport({ scale: 1 }).width, rotation: 90 });
+        const scaleL = BASE_H / vp0.width;
+        const vpL = page.getViewport({ scale: scaleL, rotation: 90 });
         const c2 = document.createElement('canvas');
-        c2.width = vpLandscape.width; c2.height = vpLandscape.height;
-        await page.render({ canvasContext: c2.getContext('2d'), viewport: vpLandscape }).promise;
+        c2.width = vpL.width; c2.height = vpL.height;
+        await page.render({ canvasContext: c2.getContext('2d'), viewport: vpL }).promise;
 
-        rendered.push({
-          dataUrl: c1.toDataURL('image/jpeg', 0.9),
-          dataUrlLandscape: c2.toDataURL('image/jpeg', 0.9),
-        });
+        rendered.push({ dataUrl: c1.toDataURL('image/jpeg', 0.9), dataUrlLandscape: c2.toDataURL('image/jpeg', 0.9) });
       }
       setPages(rendered);
       setPdfLoading(false);
@@ -169,58 +148,50 @@ export default function LivroPage() {
     setExpandedPages((prev) => ({ ...prev, [pageIndex]: !prev[pageIndex] }));
   }, []);
 
-  // Monta as folhas do flipbook
   const flipPages = useMemo(() => {
     if (pages.length === 0) return [];
     const result = [{ type: 'cover' }];
-    let pageNumber = 1;
+    let num = 1;
     pages.forEach((p, i) => {
       if (expandedPages[i]) {
-        result.push({ type: 'landscape-left',  pageIndex: i, dataUrl: p.dataUrlLandscape, pageNumber });
-        result.push({ type: 'landscape-right', pageIndex: i, dataUrl: p.dataUrlLandscape, pageNumber });
+        result.push({ type: 'landscape-left',  pageIndex: i, dataUrl: p.dataUrlLandscape, pageNumber: num });
+        result.push({ type: 'landscape-right', pageIndex: i, dataUrl: p.dataUrlLandscape, pageNumber: num });
       } else {
-        result.push({ type: 'portrait', pageIndex: i, dataUrl: p.dataUrl, pageNumber });
+        result.push({ type: 'portrait', pageIndex: i, dataUrl: p.dataUrl, pageNumber: num });
       }
-      pageNumber++;
+      num++;
     });
     result.push({ type: 'back' });
     return result;
   }, [pages, expandedPages]);
 
-  const onFlip = useCallback((e) => {
-    const page = e.data;
-    setCurrentPage(page);
-    // Última página → volta para capa
-    if (page === flipPages.length - 1) {
-      setTimeout(() => {
-        try { bookRef.current?.pageFlip()?.flip(0); } catch (_) {}
-        setCurrentPage(0);
-      }, 900);
-    }
-    // Capa → vai para última página
-    if (page === 0) {
-      setTimeout(() => {
-        try { bookRef.current?.pageFlip()?.flip(flipPages.length - 1); } catch (_) {}
-        setCurrentPage(flipPages.length - 1);
-      }, 900);
-    }
-  }, [flipPages.length]);
+  const totalPages = flipPages.length;
 
-  if (carregando) return (
-    <div className="min-h-screen bg-[#FAF8F5]"><Navbar />
-      <div className="flex items-center justify-center h-96 text-[#555]">Carregando...</div>
-    </div>
-  );
-  if (!livro) return (
-    <div className="min-h-screen bg-[#FAF8F5]"><Navbar />
-      <div className="flex items-center justify-center h-96 text-[#555]">Livro não encontrado.</div>
-    </div>
-  );
+  const onFlip = useCallback((e) => {
+    setCurrentPage(e.data);
+  }, []);
+
+  const goNext = useCallback(() => {
+    if (currentPage >= totalPages - 1) {
+      bookRef.current?.pageFlip().flip(0);
+    } else {
+      bookRef.current?.pageFlip().flipNext();
+    }
+  }, [currentPage, totalPages]);
+
+  const goPrev = useCallback(() => {
+    if (currentPage <= 0) {
+      bookRef.current?.pageFlip().flip(totalPages - 1);
+    } else {
+      bookRef.current?.pageFlip().flipPrev();
+    }
+  }, [currentPage, totalPages]);
+
+  if (carregando) return <div className="min-h-screen bg-[#FAF8F5]"><Navbar /><div className="flex items-center justify-center h-96 text-[#555]">Carregando...</div></div>;
+  if (!livro)    return <div className="min-h-screen bg-[#FAF8F5]"><Navbar /><div className="flex items-center justify-center h-96 text-[#555]">Livro não encontrado.</div></div>;
 
   const cfg = turmaConfig[livro.turma] || { bg: '#1E4D3B', accent: '#FFD430' };
   const btnColor = cfg.accent === '#FFD430' ? '#D97736' : cfg.accent;
-  const bookWrapperStyle = { width: PORTRAIT_W * 2 * zoom, height: PORTRAIT_H * zoom };
-  const bookScaleStyle = { width: PORTRAIT_W * 2, height: PORTRAIT_H, transform: `scale(${zoom})`, transformOrigin: 'top center' };
 
   return (
     <div className="min-h-screen bg-[#FAF8F5] font-sans" onContextMenu={(e) => e.preventDefault()}>
@@ -234,73 +205,68 @@ export default function LivroPage() {
 
         {pdfLoading && (
           <div className="flex flex-col items-center gap-3 py-20 text-[#555]">
-            <div className="w-10 h-10 border-4 rounded-full animate-spin"
-              style={{ borderColor: cfg.bg, borderTopColor: 'transparent' }} />
+            <div className="w-10 h-10 border-4 rounded-full animate-spin" style={{ borderColor: cfg.bg, borderTopColor: 'transparent' }} />
             <p>Preparando livro...</p>
           </div>
         )}
 
         {!pdfLoading && flipPages.length > 0 && (
           <div className="overflow-x-auto flex justify-center">
-            <div style={bookWrapperStyle}>
-              <div style={bookScaleStyle}>
-                <HTMLFlipBook ref={bookRef} width={PORTRAIT_W} height={PORTRAIT_H}
-                  showCover={true} flippingTime={700} usePortrait={false}
-                  startPage={0} onFlip={onFlip} className="shadow-2xl">
-                  {flipPages.map((fp, i) => {
-                    if (fp.type === 'cover') return <CoverPage key="cover" ref={React.createRef()} livro={livro} />;
-                    if (fp.type === 'back')   return <CoverPage key="back"  ref={React.createRef()} livro={livro} isBack />;
-                    if (fp.type === 'portrait')
-                      return <PortraitPage key={i} ref={React.createRef()} dataUrl={fp.dataUrl}
-                        pageIndex={fp.pageIndex} pageNumber={fp.pageNumber} onToggle={toggleExpand} cfg={cfg} />;
-                    if (fp.type === 'landscape-left')
-                      return <LandscapePage key={`${i}-l`} ref={React.createRef()} dataUrl={fp.dataUrl}
-                        side="left" pageIndex={fp.pageIndex} pageNumber={fp.pageNumber} onToggle={toggleExpand} cfg={cfg} />;
-                    if (fp.type === 'landscape-right')
-                      return <LandscapePage key={`${i}-r`} ref={React.createRef()} dataUrl={fp.dataUrl}
-                        side="right" pageIndex={fp.pageIndex} pageNumber={fp.pageNumber} onToggle={toggleExpand} cfg={cfg} />;
-                  })}
-                </HTMLFlipBook>
-              </div>
-            </div>
+            <HTMLFlipBook
+              key={`${W}x${H}`}
+              ref={bookRef}
+              width={W}
+              height={H}
+              showCover={true}
+              flippingTime={600}
+              usePortrait={false}
+              startPage={0}
+              onFlip={onFlip}
+              className="shadow-2xl"
+              style={{ margin: '0 auto' }}
+            >
+              {flipPages.map((fp, i) => {
+                if (fp.type === 'cover')   return <CoverPage key="cover" ref={React.createRef()} livro={livro} w={W} h={H} />;
+                if (fp.type === 'back')    return <CoverPage key="back"  ref={React.createRef()} livro={livro} isBack w={W} h={H} />;
+                if (fp.type === 'portrait')
+                  return <PortraitPage key={i} ref={React.createRef()} dataUrl={fp.dataUrl}
+                    pageIndex={fp.pageIndex} pageNumber={fp.pageNumber} onToggle={toggleExpand} cfg={cfg} w={W} h={H} />;
+                if (fp.type === 'landscape-left')
+                  return <LandscapePage key={`${i}-l`} ref={React.createRef()} dataUrl={fp.dataUrl}
+                    side="left" pageIndex={fp.pageIndex} pageNumber={fp.pageNumber} onToggle={toggleExpand} cfg={cfg} w={W} h={H} />;
+                if (fp.type === 'landscape-right')
+                  return <LandscapePage key={`${i}-r`} ref={React.createRef()} dataUrl={fp.dataUrl}
+                    side="right" pageIndex={fp.pageIndex} pageNumber={fp.pageNumber} onToggle={toggleExpand} cfg={cfg} w={W} h={H} />;
+              })}
+            </HTMLFlipBook>
           </div>
         )}
 
         {!pdfLoading && flipPages.length > 0 && (
           <>
             <div className="flex flex-wrap items-center justify-center gap-4 mt-8">
-              <button onClick={() => {
-                try {
-                  if (currentPage === 0) bookRef.current?.pageFlip()?.flip(flipPages.length - 1);
-                  else bookRef.current?.pageFlip()?.flipPrev();
-                } catch (_) {}
-              }}
-              className="border-2 px-6 py-2 rounded-full font-bold transition"
-              style={{ borderColor: cfg.bg, color: cfg.bg }}>← Voltar</button>
-              <span className="text-sm text-[#555]">{currentPage + 1} / {flipPages.length}</span>
-              <button onClick={() => { try { bookRef.current?.pageFlip()?.flipNext(); } catch (_) {} }}
-                className="px-6 py-2 rounded-full font-bold text-white transition"
+              <button onClick={goPrev} className="border-2 px-6 py-2 rounded-full font-bold transition"
+                style={{ borderColor: cfg.bg, color: cfg.bg }}>← Voltar</button>
+              <span className="text-sm text-[#555]">{currentPage + 1} / {totalPages}</span>
+              <button onClick={goNext} className="px-6 py-2 rounded-full font-bold text-white transition"
                 style={{ backgroundColor: btnColor }}>Avançar →</button>
             </div>
 
             <div className="flex items-center gap-3 mt-4">
               <span className="text-sm font-semibold text-[#555]">Zoom</span>
-              <button onClick={() => setZoom((v) => Math.max(MIN_ZOOM, +(v - ZOOM_STEP).toFixed(1)))}
-                disabled={zoom <= MIN_ZOOM}
+              <button onClick={() => setZoom((v) => Math.max(MIN_ZOOM, +(v - ZOOM_STEP).toFixed(1)))} disabled={zoom <= MIN_ZOOM}
                 className="w-9 h-9 rounded-full border-2 text-xl font-bold disabled:opacity-40"
                 style={{ borderColor: cfg.bg, color: cfg.bg }}>−</button>
               <button onClick={() => setZoom(1)} className="min-w-16 text-sm font-bold hover:underline"
                 style={{ color: cfg.bg }}>{Math.round(zoom * 100)}%</button>
-              <button onClick={() => setZoom((v) => Math.min(MAX_ZOOM, +(v + ZOOM_STEP).toFixed(1)))}
-                disabled={zoom >= MAX_ZOOM}
+              <button onClick={() => setZoom((v) => Math.min(MAX_ZOOM, +(v + ZOOM_STEP).toFixed(1)))} disabled={zoom >= MAX_ZOOM}
                 className="w-9 h-9 rounded-full border-2 text-xl font-bold disabled:opacity-40"
                 style={{ borderColor: cfg.bg, color: cfg.bg }}>+</button>
             </div>
           </>
         )}
 
-        <button onClick={() => router.back()}
-          className="mt-6 text-sm underline hover:opacity-70" style={{ color: cfg.bg }}>
+        <button onClick={() => router.back()} className="mt-6 text-sm underline hover:opacity-70" style={{ color: cfg.bg }}>
           ← Voltar para a estante
         </button>
       </main>
