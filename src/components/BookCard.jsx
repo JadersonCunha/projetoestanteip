@@ -16,10 +16,10 @@ export default function BookCard({ livro }) {
 
   return (
     <Link href={`/livro/${livro.id}`}>
-      <div className="group cursor-pointer flex flex-col items-center">
+      <div className="group cursor-pointer flex min-w-0 flex-col items-center">
         {/* Capa do livro */}
         <div
-          className="relative w-36 h-52 rounded-r-lg shadow-xl transition-all duration-300 group-hover:-translate-y-3 group-hover:shadow-2xl overflow-hidden"
+          className="book-card-cover relative h-52 w-36 max-w-full rounded-r-lg shadow-xl transition-all duration-300 group-hover:-translate-y-3 group-hover:shadow-2xl overflow-hidden"
           style={{ backgroundColor: cfg.bg }}
         >
           {/* Lombada */}
@@ -66,7 +66,7 @@ export default function BookCard({ livro }) {
           <div className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-300 bg-white" />
         </div>
 
-        <p className="mt-3 text-xs font-semibold text-[#005D72] text-center max-w-[9rem] leading-tight">
+        <p className="mt-3 max-w-full px-1 text-center text-xs font-semibold leading-tight text-[#005D72]">
           {livro.educando}
         </p>
       </div>

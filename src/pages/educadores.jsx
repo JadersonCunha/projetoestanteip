@@ -47,7 +47,7 @@ export default function Educadores() {
       <div className="min-h-screen bg-[#F5F8FA] font-sans">
         <Watermark />
         <Navbar />
-        <div className="flex items-center justify-center h-96 flex-col gap-4">
+        <div className="flex min-h-[24rem] items-center justify-center px-4 text-center flex-col gap-4">
           <p className="text-[#444]">Você precisa estar logado para acessar esta área.</p>
           <a href="/login" className="bg-[#FFD430] text-[#005D72] font-bold px-6 py-2 rounded-full hover:bg-[#e6be28] transition">
             Fazer login
@@ -61,11 +61,11 @@ export default function Educadores() {
     <div className="min-h-screen bg-[#F5F8FA] font-sans">
       <Watermark />
       <Navbar />
-      <main className="px-8 lg:px-16 py-12 max-w-3xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
+      <main className="container-site max-w-3xl py-8 sm:py-12">
+        <div className="mb-8 flex items-start justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-extrabold text-[#005D72]">Área dos Educadores</h1>
-            <p className="text-sm text-[#444] mt-1">{usuario.email}</p>
+            <h1 className="text-2xl font-extrabold text-[#005D72] sm:text-3xl">Área dos Educadores</h1>
+            <p className="mt-1 break-all text-sm text-[#444]">{usuario.email}</p>
           </div>
           <button onClick={sair} className="text-sm text-[#972632] underline hover:opacity-70">
             Sair

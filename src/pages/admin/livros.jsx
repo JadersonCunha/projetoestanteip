@@ -55,10 +55,10 @@ export default function GerenciarLivros() {
   }
 
   if (!usuario || !isAdminEmail(usuario.email)) {
-    return <><Navbar /><main className="p-12 text-center"><p>Esta página é restrita ao administrador.</p><Link href="/login">Fazer login</Link></main></>;
+    return <><Navbar /><main className="px-4 py-12 text-center sm:p-12"><p>Esta página é restrita ao administrador.</p><Link href="/login">Fazer login</Link></main></>;
   }
 
-  return <div className="min-h-screen bg-[#F5F8FA]"><Watermark /><Navbar /><main className="max-w-4xl mx-auto px-6 py-12">
+  return <div className="min-h-screen bg-[#F5F8FA]"><Watermark /><Navbar /><main className="container-site max-w-4xl py-8 sm:py-12">
     <Link href="/educadores" className="text-[#005D72] font-bold">← Área dos educadores</Link>
     <h1 className="text-3xl font-extrabold text-[#005D72] mt-6 mb-2">Gerenciar livros</h1>
     <p className="text-[#555] mb-8">Publique novos livros ou remova os que não devem mais aparecer na estante.</p>
@@ -71,6 +71,6 @@ export default function GerenciarLivros() {
       <button className="bg-[#005D72] text-white font-bold py-3 rounded-full">Subir e publicar livro</button>
       {mensagem && <p className="text-green-600">{mensagem}</p>}{erro && <p className="text-red-600">{erro}</p>}
     </form>
-    <div className="grid gap-3">{livros.map((livro) => <div key={livro.id} className="bg-white rounded-xl p-4 flex justify-between items-center shadow-sm"><div><strong>{livro.educando}</strong><p className="text-sm text-gray-500">{livro.educadora} · {livro.turma}</p></div><button onClick={() => excluir(livro.id)} className="text-[#972632] font-bold">Excluir</button></div>)}</div>
+    <div className="grid gap-3">{livros.map((livro) => <div key={livro.id} className="flex flex-col items-start gap-3 rounded-xl bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between"><div className="min-w-0"><strong className="break-words">{livro.educando}</strong><p className="break-words text-sm text-gray-500">{livro.educadora} · {livro.turma}</p></div><button onClick={() => excluir(livro.id)} className="text-[#972632] font-bold">Excluir</button></div>)}</div>
   </main></div>;
 }

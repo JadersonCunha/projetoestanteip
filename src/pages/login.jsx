@@ -43,16 +43,16 @@ export default function Login() {
   return (
     <div className="min-h-screen bg-[#F5F8FA] font-sans flex flex-col">
       <Watermark />
-      <div className="bg-[#005D72] px-8 py-5">
+      <div className="bg-[#005D72] px-4 py-4 sm:px-8 sm:py-5">
         <Link href="/" className="text-[#FFD430] font-extrabold text-lg tracking-widest uppercase">
           ← IP
         </Link>
       </div>
 
-      <div className="flex flex-1 items-center justify-center px-4 py-10">
+      <div className="flex flex-1 items-center justify-center px-4 py-8 sm:py-10">
         <div className="w-full max-w-md">
           <div className="mb-8">
-            <h1 className="text-4xl font-extrabold text-[#005D72]">Bem-vindo</h1>
+            <h1 className="text-3xl font-extrabold text-[#005D72] sm:text-4xl">Bem-vindo</h1>
             <p className="text-[#444] mt-2">Entre com seu e-mail para acessar a Estante Virtual IP.</p>
           </div>
 

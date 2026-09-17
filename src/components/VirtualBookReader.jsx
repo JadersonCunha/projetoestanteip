@@ -1,14 +1,22 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import HTMLFlipBook from 'react-pageflip';
 
 export default function VirtualBookReader({ studentName }) {
   const bookRef = useRef();
+  const [bookWidth, setBookWidth] = useState(450);
+
+  useEffect(() => {
+    const updateWidth = () => setBookWidth(Math.min(450, Math.max(180, window.innerWidth - 48)));
+    updateWidth();
+    window.addEventListener('resize', updateWidth);
+    return () => window.removeEventListener('resize', updateWidth);
+  }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-[#FAF8F5] p-6">
-      <div className="shadow-2xl bg-white p-2 rounded-lg border-4 border-[#1E4D3B]">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-[#FAF8F5] p-4 sm:p-6">
+      <div className="max-w-full overflow-x-auto rounded-lg border-4 border-[#1E4D3B] bg-white p-2 shadow-2xl">
         <HTMLFlipBook
-          width={450}
+          width={bookWidth}
           height={600}
           showCover={true}
           ref={bookRef}
@@ -31,16 +39,16 @@ export default function VirtualBookReader({ studentName }) {
           </div>
         </HTMLFlipBook>
       </div>
-      <div className="flex gap-4 mt-8">
+      <div className="mt-8 flex flex-wrap justify-center gap-3">
         <button 
           onClick={() => bookRef.current.pageFlip().flipPrev()}
-          className="border-2 border-[#1E4D3B] text-[#1E4D3B] px-6 py-2 rounded-full font-bold hover:bg-[#1E4D3B] hover:text-white transition"
+          className="border-2 border-[#1E4D3B] px-4 py-2 rounded-full font-bold text-[#1E4D3B] hover:bg-[#1E4D3B] hover:text-white transition sm:px-6"
         >
           &larr; Voltar Página
         </button>
         <button 
           onClick={() => bookRef.current.pageFlip().flipNext()}
-          className="bg-[#D97736] text-white px-6 py-2 rounded-full font-bold hover:bg-[#c2662c] transition"
+          className="bg-[#D97736] px-4 py-2 rounded-full font-bold text-white hover:bg-[#c2662c] transition sm:px-6"
         >
           Avançar Página &rarr;
         </button>

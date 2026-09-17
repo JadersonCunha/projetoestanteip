@@ -115,9 +115,23 @@ export default function LivroPage() {
   const [expandedPages, setExpandedPages] = useState({});
   const [currentPage, setCurrentPage] = useState(0);
   const [zoom, setZoom] = useState(1);
+  const [viewportWidth, setViewportWidth] = useState(0);
 
-  const W = Math.round(BASE_W * zoom);
-  const H = Math.round(BASE_H * zoom);
+  useEffect(() => {
+    const updateViewport = () => setViewportWidth(window.innerWidth);
+    updateViewport();
+    window.addEventListener('resize', updateViewport);
+    return () => window.removeEventListener('resize', updateViewport);
+  }, []);
+
+  const usePortrait = viewportWidth > 0 && viewportWidth < 768;
+  // On phones the reader shows one page at a time; larger screens can show a spread.
+  const availableWidth = Math.max(150, viewportWidth - (usePortrait ? 32 : 24));
+  const fitZoom = viewportWidth
+    ? Math.min(zoom, availableWidth / (BASE_W * (usePortrait ? 1 : 2)))
+    : zoom;
+  const W = Math.max(150, Math.round(BASE_W * fitZoom));
+  const H = Math.round(BASE_H * fitZoom);
 
   useEffect(() => {
     if (!id) return;
@@ -209,9 +223,9 @@ export default function LivroPage() {
     <div className="min-h-screen bg-[#FAF8F5] font-sans" onContextMenu={(e) => e.preventDefault()}>
       <Navbar />
       <style>{`@media print { body { display: none; } }`}</style>
-      <main className="flex flex-col items-center py-10 px-4">
-        <div className="mb-6 text-center">
-          <h1 className="text-2xl font-extrabold" style={{ color: cfg.bg }}>{livro.educando}</h1>
+      <main className="flex flex-col items-center px-3 py-8 sm:px-4 sm:py-10">
+        <div className="mb-6 max-w-full text-center">
+          <h1 className="break-words text-xl font-extrabold sm:text-2xl" style={{ color: cfg.bg }}>{livro.educando}</h1>
           {livro.educadora && <p className="text-[#555] text-sm mt-1">{livro.educadora}</p>}
         </div>
 
@@ -223,7 +237,7 @@ export default function LivroPage() {
         )}
 
         {!pdfLoading && flipPages.length > 0 && (
-          <div className="overflow-x-auto flex justify-center">
+          <div className="flex max-w-full justify-center overflow-x-auto">
             <HTMLFlipBook
               key={`${W}x${H}`}
               ref={bookRef}
@@ -231,7 +245,7 @@ export default function LivroPage() {
               height={H}
               showCover={true}
               flippingTime={600}
-              usePortrait={false}
+              usePortrait={usePortrait}
               startPage={0}
               onFlip={onFlip}
               className="shadow-2xl"
@@ -256,11 +270,11 @@ export default function LivroPage() {
 
         {!pdfLoading && flipPages.length > 0 && (
           <>
-            <div className="flex flex-wrap items-center justify-center gap-4 mt-8">
-              <button onClick={goPrev} className="border-2 px-6 py-2 rounded-full font-bold transition"
+            <div className="mt-8 flex w-full flex-wrap items-center justify-center gap-3">
+              <button onClick={goPrev} className="border-2 px-4 py-2 rounded-full font-bold transition sm:px-6"
                 style={{ borderColor: cfg.bg, color: cfg.bg }}>← Voltar</button>
               <span className="text-sm text-[#555]">{currentPage + 1} / {totalPages}</span>
-              <button onClick={goNext} className="px-6 py-2 rounded-full font-bold text-white transition"
+              <button onClick={goNext} className="px-4 py-2 rounded-full font-bold text-white transition sm:px-6"
                 style={{ backgroundColor: btnColor }}>Avançar →</button>
             </div>
 

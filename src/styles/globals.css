@@ -5,6 +5,27 @@
 html {
   scroll-behavior: smooth;
   font-size: 16px;
+  overflow-x: hidden;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  overflow-x: hidden;
+  background: #F5F8FA;
+  -webkit-text-size-adjust: 100%;
+}
+
+button, input, textarea, select {
+  font: inherit;
+}
+
+button, a {
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Limita largura máxima do conteúdo e centraliza */
@@ -12,7 +33,7 @@ html {
   width: 100%;
   max-width: 1280px;
   margin: 0 auto;
-  padding: 0 2rem;
+  padding-inline: clamp(1rem, 4vw, 2rem);
 }
 
 /* Tamanhos de fonte fixos com clamp — não variam com a tela */
@@ -23,6 +44,14 @@ html {
 
 /* Responsividade mobile */
 @media (max-width: 768px) {
+  html {
+    font-size: 15px;
+  }
+
+  .container-site {
+    padding-inline: 1rem;
+  }
+
   .hero-grid {
     grid-template-columns: 1fr !important;
     gap: 2rem !important;
@@ -46,6 +75,26 @@ html {
   .navbar-header {
     padding: 1rem 1.2rem !important;
     position: relative !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .titulo-hero span {
+    font-size: clamp(2rem, 12vw, 3rem) !important;
+  }
+
+  .book-card-cover {
+    width: min(9rem, 100%);
+    height: auto;
+    aspect-ratio: 9 / 13;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
   }
 }
 
